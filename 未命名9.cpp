@@ -1,8 +1,11 @@
-#include<stdio.h>
-#include<math.h>
+#include <stdio.h>
+
 int main()
 {
-	int a=777;
+	for( ; ; ){
+		
+	}
+    printf("%d",i);
 	
-	printf("%d",(int)sqrt(a));
+    return 0;
 }
