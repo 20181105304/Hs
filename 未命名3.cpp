@@ -1,40 +1,49 @@
 #include<stdio.h>
-int main()
-{
-	int n,a[1001],i;
-	int p=0,t=0;
-	scanf("%d",&n);
-	
-	for(i=1;i<=n; i++){
-		a[i]=1;
-	}
-	
-	if(n!=1){
-		for(i=1; i<=n; i++){
-			if(a[i]==1){
-				p++;
-			}
-			
-			if( p%3==0){
-				a[i]=0;
-				t++;
-				
-				if(t==n-1){
-					break;
-				}
-				
-			}
-			
-			if(i==n){
-				i=0;
-			}
-		}
-	}
-	
-	for(i=1;i<=n; i++){
-		if(a[i]==1){
-			printf("%d",i);
-			break;
-		}
-	}
+#define MAX 30005
+int f[MAX]={0};
+int getf(int v){
+    if(f[v]==v)
+    return v;
+    else
+    f[v]=getf(f[v]);
+    return f[v];
 }
+void merge(int v,int u){
+    int t1=getf(v);
+    int t2=getf(u);
+    if(t1!=t2);
+    f[t2]=t1;
+    return;
+}
+int main(void){
+    int n;
+    scanf("%d",&n);
+    int m;
+    scanf("%d",&m);
+    for(int i = 1; i <= n; ++i){
+        f[i]=i;
+    }
+    for(int i = 1;i <= m; ++i){
+        int p,p1,p2;
+        scanf("%d",&p);
+        scanf("%d",&p1);
+        p -= 1;
+        while(p>0){
+            scanf("%d",&p2);
+            merge(p1,p2);
+            p--;
+        }
+    }
+        int temp[MAX]={0};
+        int max=-1;
+        int t;
+        for(int i = 1; i <= n; ++i){
+            t=getf(i);
+            temp[t]++;
+            if(max<temp[t])
+                max=temp[t];
+        }
+        printf("%d\n",max);
+        return 0; 
+    
+} 

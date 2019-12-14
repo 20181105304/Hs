@@ -1,78 +1,61 @@
-#include <stdio.h>
+#include<stdio.h>
+#include<string.h>
+int visit[100]={0};
+int G[100][100];
+void DFS(int i,int n);
+void BFS(int i,int n);
 
-//typedef enum {false, true} bool;
-#define MaxVertexNum 10   /* 最大顶点数设为10 */
-typedef int Vertex;       /* 用顶点下标表示顶点,为整型 */
-
-/* 邻接点的定义 */
-typedef struct AdjVNode *PtrToAdjVNode; 
-struct AdjVNode{
-    Vertex AdjV;        /* 邻接点下标 */
-    PtrToAdjVNode Next; /* 指向下一个邻接点的指针 */
-};
-
-/* 顶点表头结点的定义 */
-typedef struct Vnode{
-    PtrToAdjVNode FirstEdge; /* 边表头指针 */
-} AdjList[MaxVertexNum];     /* AdjList是邻接表类型 */
-
-/* 图结点的定义 */
-typedef struct GNode *PtrToGNode;
-struct GNode{  
-    int Nv;     /* 顶点数 */
-    int Ne;     /* 边数   */
-    AdjList G;  /* 邻接表 */
-};
-typedef PtrToGNode LGraph; /* 以邻接表方式存储的图类型 */
-
-bool Visited[MaxVertexNum]; /* 顶点的访问标记 */
-
-LGraph CreateGraph(); /* 创建图并且将Visited初始化为false；裁判实现，细节不表 */
-
-void Visit( Vertex V )
-{
-    printf(" %d", V);
-}
-
-void BFS ( LGraph Graph, Vertex S, void (*Visit)(Vertex) );
-
-int main()
-{
-    LGraph G;
-    Vertex S;
-
-    G = CreateGraph();
-    scanf("%d", &S);
-    printf("BFS from %d:", S);
-    BFS(G, S, Visit);
-
-    return 0;
-}
-
-
-void BFS ( LGraph Graph, Vertex S, void (*Visit)(Vertex) )
-{
-	
-	int a[100],i=0,j=0;
-	Vertex s;
-	PtrToAdjVNode p;
-	
-	Visit(S);
-	Visited[S] = true;
-	
-	a[i++] = S;
-	
-	while(i>j){
-		p = Graph->G[a[j++]].FirstEdge;
-		
-		while(p){
-			s = p->AdjV;
-			if(!Visited[s]){
-				Visit(s);
-	            Visited[s] = true;
-	            a[i++] = s;
-			}
-			p = p->Next;
+int main(void) {
+	int n,i,m,a,b;
+	scanf ("%d %d",&n,&m);
+	for (i=0;i<m;i++) {
+		scanf ("%d %d",&a,&b);
+		G[a][b]=G[b][a]=1;
+	}
+	for (i=0;i<n;i++) {
+		if (visit[i]==0) {
+			printf ("{");
+			DFS(i,n);
+			printf (" }\n");
 		}
-	}	
+	}
+	for (i=0;i<n;i++) {
+		visit[i]=0;
+	}
+	//visit[100]={0};
+	for (i=0;i<n;i++) {
+		if (visit[i]==0) {
+			printf ("{");
+			BFS(i,n);
+			printf (" }\n");
+		}
+	}
+	return 0;
+} 
+void DFS(int i,int n) {
+	int j;
+	printf (" %d",i);
+	visit[i]=1;
+	for (j=0;j<n;j++) {
+		if(visit[j]==0&&G[i][j]==1) {
+			DFS(j,n);
+		}
+	}
 }
+void BFS(int i,int n) {
+	int a[100],j,x=-1,y=-1,last=0,v;
+	visit[i]=1;
+	a[++x]=i;
+	while(1) {
+		if (x==y) break;
+		v=a[++y];
+		printf (" %d",v);
+		for (j=0;j<n;j++) {
+			if (visit[j]==0&&G[v][j]==1) {
+				a[++x]=j;
+				visit[j]=1;
+			}
+		}
+	}
+}
+
