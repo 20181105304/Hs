@@ -1,54 +1,70 @@
 #include<stdio.h>
-
+#define INF 99999
 int G[1005][1005];
+int pre[1005],dist[1005];
 
-int BFS(int x, int n){
-	int Visit[1005]={0},i=0,j=0,k;
-	int num,count=1,l=0,temp,last,a[1005];
+
+void Prim(int n)
+{
+	int i,j,flag,min,sum=0;
 	
-	last = x;
-	Visit[x]=1;
-	a[i++]=x;
+	for(i=1; i<=n; i++){
+		dist[i] = G[1][i];
+		pre[i] = -1;
+	}
 	
-	while(i>j) {
-		num = a[j++];
-		
-		for(k=1; k<=n; k++){
-			if(Visit[k]==0 && G[num][k]==1){
-				Visit[k]=1;
-				a[i++]=k;
-				count++;
-				temp=k;
-			}
+	dist[1]=0;
+	pre[1]=0;
+	
+	for(i=1; i<=n; i++){
+		min=INF;
+		for(j=1; j<=n; j++){
+			if(pre[j]==-1 && dist[j]<min){
+			    flag=j;
+			    min=dist[j];
+		    }
 		}
 		
-		if(last == num){
-			l++;
-			last=temp;
+		pre[flag] = i;
+		sum+=min;
+		
+		for(j=1; j<=n; j++){
+			if(pre[j]==-1 && dist[j]>G[flag][j])
+				dist[j]=G[flag][j];
+			
 		}
 		
-		if(l==6){
-			break;
-		}
 		
 	}
 	
-	return count;
+	if(sum>INF || sum<0){
+		printf("-1\n");
+	}
+	else{
+		printf("%d\n",sum);
+	}
+	
 }
 
 int main()
 {
-	int n,m,a,b,i;
+	int n,m,i,j,a,b,w;
 	scanf("%d %d",&n,&m);
 	
+	for(i=0; i<=n; i++){
+		for(j=0; j<=n; j++){
+			G[i][j]=INF;
+		}
+	}
+	
 	for(i=1; i<=m; i++){
-		scanf("%d %d",&a,&b);
-		G[a][b]=G[b][a]=1;
+		scanf("%d %d %d",&a,&b,&w);
+//		if(G[a][b]>w){
+			G[a][b]=G[b][a]=w;
+//		}
+		
 	}
+	Prim(n);
 	
-	for(i=1; i<=n; i++){
-		double z=BFS(i,n);
-		printf("%d: %.2lf%%\n",i,z/n*100);
-	}
-	
-} 
+	return 0;
+}

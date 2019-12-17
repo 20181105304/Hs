@@ -1,53 +1,49 @@
-#include<iostream>
-#include<queue>
-using namespace std;
-int g[10001][10001],v,e,x,y,i;
-int bfs(int z)
-{
-    int i,vis[10001]={0};
-    int last=z;//记录每层的最后一个元素：该层压入之后弹出之前更新：last=temp；
-    int tail;//用于记录每层压入时的结点
-    int level=0;
-    int count=1;
-    queue<int>q;
-    q.push(z);
-    vis[z]=1;
-    while(!q.empty())
-    {
-        z=q.front();
-        q.pop();
-        for(i=1;i<=v;i++)
-        {
-            if(g[z][i]==1 && vis[i]==0)
-            {
-                count++;
-                vis[i]=1;
-                q.push(i);
-                tail=i;
+#include<stdio.h>  
+  
+#define inf 0xffffff  
+  
+int map[1005][1005],dis[1005],pre[1005];  
+//map存两点距离，dis存未收入点到收入点距离，pre存该点的父结点  
+int i,j,n,m,x,y,z;  
+  
+void prim(){  
+    for(i=1;i<=n;i++){  
+        dis[i]=map[1][i];  
+        pre[i]=-1; 
+    }  
+    dis[1]=0;  
+    pre[1]=0;  
+    int sum=0,flag,minn;  
+    for(i=2;i<=n;i++){ 
+        minn=inf;
+        for(j=1;j<=n;j++){
+            if(pre[j]==-1&&dis[j]<minn){
+                flag=j;
+                minn=dis[j];
             }
-        }
-        if(last==z)     //一层全部弹出，准备开始弹下一层：弹出的(x)=当前层最后一个元素(last) 
-        {
-            level++;
-            last=tail;  //一层全都压入完后，更新last
-        }
-        if(level==6) break;
-    }
-    return count;
-}
-int main()
-{
-    cin>>v>>e;
-    while(e--)
-    {
-        cin>>x>>y;
-        g[x][y]=g[y][x]=1;
-    }
-    for(i=1;i<=v;i++)
-    {
-        double n=v;
-        double m=bfs(i);
-        printf("%d: %.2f%%\n",i,m/n*100);
-    }
-    return 0;
-}
+        }  
+            pre[flag] = i;
+            sum+=minn;
+            for(j=1;j<=n;j++){
+                if(pre[j]==-1&&dis[j]>map[flag][j])  
+                //更新未收入点到已收入点的最短距离   
+                dis[j]=map[flag][j];  
+            }  
+    }  
+    if(sum>inf||sum<0) printf("-1\n");  //如果存在不连通的点，sum>inf ||sum<0(加法越界)  
+    else printf("%d\n",sum);  
+}   
+  
+int main(){  
+    scanf("%d%d",&n,&m);
+    for(i=0;i<1005;i++)  
+    for(j=0;j<1005;j++)  
+        map[i][j]=inf;  
+    for(i=1;i<=m;i++){  
+        scanf("%d%d%d",&x,&y,&z); 
+		if(map[x][y]>z)  
+        map[x][y]=map[y][x]=z;    
+    }  
+    prim();  
+    return 0;  
+}  
